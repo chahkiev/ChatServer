@@ -1,18 +1,45 @@
 import ast
+from django.utils import timezone
 
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
+from server.models import User, Chat, ChatUser, Message
 from django.views.decorators.csrf import csrf_exempt
 
 
 def add_user(user):
     print('add_user()')
+    userObj = User.objects.create(username=user,
+							created_at=timezone.now())
+    userObj.save()
     return
 
 
 def add_chat(chatName, users):
     print('add_chat()')
+    chatObj = Chat.objects.create(name=chatName,
+							created_at=timezone.now())
+    chatObj.save()
+    chat = Chat.objects.filter(name=chatName).first()
+
+    # Adding rows without BULK_CREATE
+    # for userId in users:
+    #     user = User.objects.filter(id=userId).first()
+    #     chatUserObj = ChatUser.objects.create(chat=chat, user=user)
+    #     print(chatUserObj)
+    #     chatUserObj.save()
+
+    usersForCreate = []
+
+    for userId in users:
+        user = User.objects.filter(id=userId).first()
+        chatUserObj = ChatUser.objects.create(chat=chat, user=user)
+        usersForCreate.append(chatUserObj)
+
+    print(usersForCreate)
+    ChatUser.objects.bulk_create(usersForCreate, ignore_conflicts=True)
+
     return
 
 

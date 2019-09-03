@@ -2,7 +2,7 @@ venv/
 __pycache__/
 Chat/__pycache__/
 server/__pycache__/
-server/__migrations__/
+server/migrations/
 db.sqlite3
 .vscode/
 
