@@ -7,6 +7,35 @@ from django.views import View
 from server.models import User, Chat, ChatUser, Message
 from django.views.decorators.csrf import csrf_exempt
 
+@csrf_exempt
+def print_DB(request):
+    print("print_DB()")
+    users = User.objects.all()
+    for i in users:
+        print(i.id, i.username, i.created_at)
+    
+    print()
+
+    chats = Chat.objects.all()
+    for i in chats:
+        print(i.id, i.name, i.created_at)
+
+    print()
+
+    chatUser = ChatUser.objects.all()
+    for i in chatUser:
+        print(i.id, i.chat, i.user)
+
+    print()
+
+    messages = Message.objects.all()
+    for i in messages:
+        print(i.id, i.chat, i.author, i.text, i.created_at)
+
+    print()
+
+    return HttpResponse(status=200)
+
 
 def add_user(user):
     print('add_user()')
@@ -23,33 +52,53 @@ def add_chat(chatName, users):
     chatObj.save()
     chat = Chat.objects.filter(name=chatName).first()
 
-    # Adding rows without BULK_CREATE
-    # for userId in users:
-    #     user = User.objects.filter(id=userId).first()
-    #     chatUserObj = ChatUser.objects.create(chat=chat, user=user)
-    #     print(chatUserObj)
-    #     chatUserObj.save()
-
-    usersForCreate = []
-
+    #Adding rows without BULK_CREATE
     for userId in users:
         user = User.objects.filter(id=userId).first()
         chatUserObj = ChatUser.objects.create(chat=chat, user=user)
-        usersForCreate.append(chatUserObj)
+        print(chatUserObj)
+        chatUserObj.save()
 
-    print(usersForCreate)
-    ChatUser.objects.bulk_create(usersForCreate, ignore_conflicts=True)
+    #Adding rows with BULK_CREATE
+    # usersForCreate = []
+    # for userId in users:
+    #     user = User.objects.filter(id=userId).first()
+    #     chatUserObj = ChatUser.objects.create(chat=chat, user=user)
+    #     usersForCreate.append(chatUserObj)
+
+    # print(usersForCreate)
+    # ChatUser.objects.bulk_create(usersForCreate, ignore_conflicts=True)
 
     return
 
 
 def add_message(chatId, userId, text):
     print('add_message')
+    chat = Chat.objects.filter(id=chatId).first()
+    author = User.objects.filter(id=userId).first()
+    print(chat)
+    print(author)
+    print(text)
+    messageObj = Message.objects.create(chat=chat,
+                                        author=author,
+                                        text=text,
+                                        created_at=timezone.now())
+    messageObj.save()
     return
 
 
 def get_chats(userId):
     print('get_chats()')
+    chatsUserDB = ChatUser.objects.filter(user=userId)
+    chats = []
+
+    for chatUserDB in chatsUserDB:
+        chatMessages = Message.objects.filter(chat=chatUserDB.chat).order_by('created_at').reverse()
+        for message in chatMessages:
+            chats.append( [chatUserDB.chat, message.created_at] )
+            break
+
+    print(chats)
     return
 
 

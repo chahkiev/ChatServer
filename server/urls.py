@@ -3,6 +3,7 @@ from django.urls import path
 from server.views import *
 
 urlpatterns = [
+    url(r'^printDB', print_DB, name="print Database"),
 
     url(r'^users/add', addUser, name="addUser"),
 
