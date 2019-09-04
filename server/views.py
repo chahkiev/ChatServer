@@ -196,9 +196,14 @@ def addMessage(request):
     print(data['author'])
     print(data['text'])
 
-    if 'chat' in data and 'author' in data and 'text' in data:
-        add_message(data['chat'], data['author'], data['text'])
-        return HttpResponse(status=200)
+    chatExists = Chat.objects.filter(id=data['chat']).first()
+    authorExists = User.objects.filter(id=data['author']).first()
+
+    if 'chat' in data and chatExists and \
+        'author' in data and authorExists and \
+        'text' in data:
+            add_message(data['chat'], data['author'], data['text'])
+            return HttpResponse(status=200)
     else:
         return HttpResponse(status=409)
     
