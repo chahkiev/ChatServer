@@ -36,13 +36,29 @@ def print_DB(request):
 
     return HttpResponse(status=200)
 
+def user_exists(username):
+    user = User.objects.filter(username=username).first()
+    if user == None:
+        return 0
+    else:
+        return user.id
 
-def add_user(user):
+    
+def add_user(username):
     print('add_user()')
-    userObj = User.objects.create(username=user,
-							created_at=timezone.now())
-    userObj.save()
-    return
+    userExists = user_exists(username)
+    if not userExists:
+        try:
+            userObj = User.objects.create(username=username,
+                                    created_at=timezone.now())
+            userObj.save()
+            userId = User.objects.filter(username=username).first().id
+            print("userId",  userId)
+            return {"userId": userID, "status" : 200}
+        except:
+            return {"userId": None, "status" : 409}
+    else:
+        return {"userId": userExists, "status" : 200}
 
 
 def add_chat(chatName, users):
@@ -95,7 +111,7 @@ def get_chats(userId):
     for chatUserDB in chatsUserDB:
         chatMessages = Message.objects.filter(chat=chatUserDB.chat).order_by('created_at').reverse()
         for message in chatMessages:
-            chats.append( [chatUserDB.chat, message.created_at] )
+            chats.append( [chatUserDB.chat, message.created_at.created_at.now().strftime("%Y-%m-%d %H:%M:%S")] )
             break
 
     print(chats)
@@ -104,6 +120,13 @@ def get_chats(userId):
 
 def get_messages(chatId):
     print('get_messages()')
+    messagesDB = Message.objects.filter(chat=chatId).order_by('created_at').reverse()
+    messages = []
+
+    for message in messagesDB:
+        messages.append( [message.chat.name, message.author.username, message.text, message.created_at.now().strftime("%Y-%m-%d %H:%M:%S")] )
+        print(message.chat, message.author, message.text, message.created_at.now().strftime("%Y-%m-%d %H:%M:%S"))
+        print(messages)
     return
 
 
@@ -117,8 +140,10 @@ def addUser(request):
     print(data['username'])
 
     if 'username' in data:
-        add_user(data['username'])
-        return HttpResponse(status=200)
+        user = add_user(data['username'])
+        
+        print("returning Id ", HttpResponse( user["userId"] ).content)
+        return HttpResponse( user["userId"] , status=user["status"])   # ADD RETURN 0 AND RETURN USERID
     else:
         return HttpResponse(status=409)
 
