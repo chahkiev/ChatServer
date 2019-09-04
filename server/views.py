@@ -36,12 +36,33 @@ def print_DB(request):
 
     return HttpResponse(status=200)
 
+
 def user_exists(username):
     user = User.objects.filter(username=username).first()
     if user == None:
         return 0
     else:
         return user.id
+
+
+def add_users_to_chat(chat, users):
+    for userId in users:
+        user = User.objects.filter(id=userId).first()
+        userExistsInChat = ChatUser.objects.filter(chat=chat, user=userId).first()
+
+        if user != None and userExistsInChat == None:
+            chatUserObj = ChatUser.objects.create(chat=chat, user=user)
+            print(chatUserObj)
+            chatUserObj.save()
+    return
+
+
+def chat_exists(chatName):
+    chat = Chat.objects.filter(name=chatName).first()
+    if chat == None:
+        return 0
+    else:
+        return chat.id
 
     
 def add_user(username):
@@ -54,7 +75,7 @@ def add_user(username):
             userObj.save()
             userId = User.objects.filter(username=username).first().id
             print("userId",  userId)
-            return {"userId": userID, "status" : 200}
+            return {"userId": userId, "status" : 200}
         except:
             return {"userId": None, "status" : 409}
     else:
@@ -63,29 +84,27 @@ def add_user(username):
 
 def add_chat(chatName, users):
     print('add_chat()')
-    chatObj = Chat.objects.create(name=chatName,
-							created_at=timezone.now())
-    chatObj.save()
-    chat = Chat.objects.filter(name=chatName).first()
+    chatExists = chat_exists(chatName)
+    if not chatExists:
+        try:
+            chatObj = Chat.objects.create(name=chatName,
+                                    created_at=timezone.now())
+            chatObj.save()
+            chat = Chat.objects.filter(name=chatName).first()
 
-    #Adding rows without BULK_CREATE
-    for userId in users:
-        user = User.objects.filter(id=userId).first()
-        chatUserObj = ChatUser.objects.create(chat=chat, user=user)
-        print(chatUserObj)
-        chatUserObj.save()
+            add_users_to_chat(chat, users)
 
-    #Adding rows with BULK_CREATE
-    # usersForCreate = []
-    # for userId in users:
-    #     user = User.objects.filter(id=userId).first()
-    #     chatUserObj = ChatUser.objects.create(chat=chat, user=user)
-    #     usersForCreate.append(chatUserObj)
-
-    # print(usersForCreate)
-    # ChatUser.objects.bulk_create(usersForCreate, ignore_conflicts=True)
-
-    return
+            # for userId in users:
+                # user = User.objects.filter(id=userId).first()
+                # if user != None:
+                #     chatUserObj = ChatUser.objects.create(chat=chat, user=user)
+                #     print(chatUserObj)
+                #     chatUserObj.save()
+            return {"chatId": chatExists, "status" : 200}
+        except:
+            return {"chatId": None, "status" : 409}
+    else:
+        return {"chatId": chatExists, "status" : 200}
 
 
 def add_message(chatId, userId, text):
@@ -141,12 +160,10 @@ def addUser(request):
 
     if 'username' in data:
         user = add_user(data['username'])
-        
         print("returning Id ", HttpResponse( user["userId"] ).content)
-        return HttpResponse( user["userId"] , status=user["status"])   # ADD RETURN 0 AND RETURN USERID
+        return HttpResponse( user["userId"] , status=user["status"])
     else:
         return HttpResponse(status=409)
-
 
 
 @csrf_exempt
@@ -158,9 +175,11 @@ def addChat(request):
     print(data)
     print(data['name'])
     print(data['users'])
-    if 'name' in data and 'users' in data:
-        add_chat(data['name'], data['users'])
-        return HttpResponse(status=200)
+    if 'name' in data and 'users' in data and data['users'] != []:
+        chat = add_chat(data['name'], data['users'])
+        print("returning Id ", HttpResponse( chat["chatId"] ).content)
+        return HttpResponse( chat["chatId"] , status=chat["status"])
+        # return HttpResponse(status=200)
     else:
         return HttpResponse(status=409)
     
