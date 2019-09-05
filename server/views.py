@@ -36,7 +36,6 @@ def print_DB(request):
 
     return HttpResponse(status=200)
 
-
 def user_exists(username):
     user = User.objects.filter(username=username).first()
     if user == None:
@@ -49,11 +48,12 @@ def add_users_to_chat(chat, users):
     for userId in users:
         user = User.objects.filter(id=userId).first()
         userExistsInChat = ChatUser.objects.filter(chat=chat, user=userId).first()
-
+        print("userExistsInChat", userExistsInChat==None)
         if user != None and userExistsInChat == None:
             chatUserObj = ChatUser.objects.create(chat=chat, user=user)
             print(chatUserObj)
             chatUserObj.save()
+
     return
 
 
@@ -91,19 +91,15 @@ def add_chat(chatName, users):
                                     created_at=timezone.now())
             chatObj.save()
             chat = Chat.objects.filter(name=chatName).first()
-
             add_users_to_chat(chat, users)
 
-            # for userId in users:
-                # user = User.objects.filter(id=userId).first()
-                # if user != None:
-                #     chatUserObj = ChatUser.objects.create(chat=chat, user=user)
-                #     print(chatUserObj)
-                #     chatUserObj.save()
-            return {"chatId": chatExists, "status" : 200}
+            return {"chatId": chat.id, "status" : 200}
         except:
             return {"chatId": None, "status" : 409}
     else:
+        print(chatExists)
+        chat = Chat.objects.filter(name=chatName).first()
+        add_users_to_chat(chat, users)
         return {"chatId": chatExists, "status" : 200}
 
 
@@ -179,11 +175,9 @@ def addChat(request):
         chat = add_chat(data['name'], data['users'])
         print("returning Id ", HttpResponse( chat["chatId"] ).content)
         return HttpResponse( chat["chatId"] , status=chat["status"])
-        # return HttpResponse(status=200)
     else:
         return HttpResponse(status=409)
     
-
 
 @csrf_exempt
 def addMessage(request):
