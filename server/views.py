@@ -3,8 +3,19 @@ from django.utils import timezone
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import View
-from server.models import User, Chat, ChatUser, Message
+from server.models import User, Chat, ChatUser, Message, Logger
 from django.views.decorators.csrf import csrf_exempt
+
+
+def logger(method, data):
+    try:
+        log = Logger.objects.create(method=method,
+                                    data=data,
+                                    created_at=timezone.now())
+        log.save()
+    except:
+        pass
+    return
 
 
 def user_exists(username):
@@ -110,8 +121,9 @@ def get_messages(chatId):
 def addUser(request):
     body = request.body
     body = body.decode("utf-8")
+    logger('addUser', body)
     data = ast.literal_eval(body)
-    print("addUser(),  data: {}".format(data))
+    # print("addUser(),  data: {}".format(data))
 
     if 'username' in data:
         user = add_user(data['username'])
@@ -124,8 +136,9 @@ def addUser(request):
 def addChat(request):
     body = request.body
     body = body.decode("utf-8")
+    logger('addChat', body)
     data = ast.literal_eval(body)
-    print("addChat(),  data: {}".format(data))
+    # print("addChat(),  data: {}".format(data))
 
     if 'name' in data and 'users' in data and data['users'] != []:
         chat = add_chat(data['name'], data['users'])
@@ -138,8 +151,9 @@ def addChat(request):
 def addMessage(request):
     body = request.body
     body = body.decode("utf-8")
+    logger('addMessage', body)
     data = ast.literal_eval(body)
-    print("addMessage(),  data: {}".format(data))
+    # print("addMessage(),  data: {}".format(data))
 
     chatExists = Chat.objects.filter(id=data['chat']).first()
     authorExists = User.objects.filter(id=data['author']).first()
@@ -157,8 +171,9 @@ def addMessage(request):
 def getChats(request):
     body = request.body
     body = body.decode("utf-8")
+    logger('getChats', body)
     data = ast.literal_eval(body)
-    print("getChats(),  data: {}".format(data))
+    # print("getChats(),  data: {}".format(data))
 
     if 'user' in data:
         get_chats(data['user'])
@@ -172,8 +187,9 @@ def getChats(request):
 def getMessages(request):
     body = request.body
     body = body.decode("utf-8")
+    logger('getMessage', body)
     data = ast.literal_eval(body)
-    print("getMessages(),  data: {}".format(data))
+    # print("getMessages(),  data: {}".format(data))
 
     if 'chat' in data:
         get_messages(data['chat'])

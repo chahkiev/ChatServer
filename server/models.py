@@ -32,3 +32,14 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class Logger(models.Model):
+    method = models.TextField(verbose_name="Method")
+    data = models.TextField(verbose_name="Data")
+    created_at = models.DateTimeField(default=timezone.now, verbose_name="Method was requested at")
+
+    def __str__(self):
+        return self.method
+
+
