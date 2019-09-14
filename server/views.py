@@ -155,14 +155,14 @@ def addMessage(request):
     data = ast.literal_eval(body)
     # print("addMessage(),  data: {}".format(data))
 
-    chatExists = Chat.objects.filter(id=data['chat']).first()
-    authorExists = User.objects.filter(id=data['author']).first()
-
-    if 'chat' in data and chatExists and \
-        'author' in data and authorExists and \
-        'text' in data:
-            add_message(data['chat'], data['author'], data['text'])
-            return HttpResponse(status=200)
+    if 'chat' in data and 'author' in data and 'text' in data:
+            try:
+                chatExists = Chat.objects.filter(id=data['chat']).first()
+                authorExists = User.objects.filter(id=data['author']).first()
+                add_message(data['chat'], data['author'], data['text'])
+                return HttpResponse(status=200)
+            except:
+                return HttpResponse(status=409)      
     else:
         return HttpResponse(status=409)
     

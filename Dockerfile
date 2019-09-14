@@ -5,11 +5,12 @@ RUN apt-get update && apt-get install -y \
     git \
     vim
 
-WORKDIR /home/Chat
+WORKDIR /home/ChatServer
 ADD . .
 
 RUN pip3 install -r requirements.txt  && \
     python3 manage.py makemigrations && \
+    python3 manage.py makemigrations server && \
     python3 manage.py migrate
-    
-# ENTRYPOINT [ "python3", "manage.py", "runserver", "0.0.0.0:9000" ]
+
+# ENTRYPOINT ["python3", "manage.py", "runserver", "0.0.0.0:9000"]

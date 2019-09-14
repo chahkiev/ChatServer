@@ -1,3 +1,8 @@
+[![Travis][build-badge]][build]
+
+[build-badge]: https://img.shields.io/travis/chahkiev/testTravis/master.png?style=flat-square
+[build]: https://travis-ci.org/chahkiev/testTravis
+
 # ChatServer
 
 Задание – разработать чат-сервер, предоставляющий HTTP API для работы с чатами и сообщениями пользователя.
@@ -121,14 +126,25 @@ curl --header "Content-Type: application/json" \
 * Django - фреймворк на языке Python;
 * SQLite – компактная СУБД;
 * Github – репозиторий для кода;
-* Docker - ПО для контейнеризации.
+* Docker - ПО для контейнеризации;
+* Docker-compose - пакетный менеджер для Docker;
+* Travis CI - сервис для сборки и тестирования ПО.
 
 
 ## Deploy
 ```bash
 $ cd ~
 $ git clone https://github.com/chahkiev/ChatServer.git
-$ cd Chat/
+$ cd ChatServer/
 $ docker-compose build
 $ docker-compose up
+```
+
+## Testing
+
+```bash
+# while the server is running on port 9000
+$ cd ~
+$ cd ChatServer/
+$ python3 manage.py test tests_server
 ```
