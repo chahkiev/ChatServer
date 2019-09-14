@@ -1,7 +1,8 @@
 import json
-import requests
-from server.models import User, Chat, ChatUser, Message
 from django.utils import timezone
+from server.models import User, Chat, ChatUser, Message
+
+
 
 def create_test_users():
     print("Creating testUsers")
@@ -9,68 +10,29 @@ def create_test_users():
     headers = "Content-Type: application/json".split(':')
     headers = {headers[0]: headers[1][1::]}
 
-    users = ["test_user_1", 
-             "test_user_2", 
-             "test_user_3", 
-             "test_user_4", 
-             "test_user_5", 
-             "test_user_6", 
-             "test_user_7", 
-             "test_user_8", 
-             "test_user_9", 
-             "test_user_10", 
-             "test_user_11", 
-             "test_user_12", 
-             "test_user_13", 
-             "test_user_14", 
-             "test_user_15", 
-             "test_user_16", 
-             "test_user_17", 
+    users = ["test_user_1",
+             "test_user_2",
+             "test_user_3",
+             "test_user_4",
+             "test_user_5",
+             "test_user_6",
+             "test_user_7",
+             "test_user_8",
+             "test_user_9",
+             "test_user_10",
+             "test_user_11",
+             "test_user_12",
+             "test_user_13",
+             "test_user_14",
+             "test_user_15",
+             "test_user_16",
+             "test_user_17",
              "test_user_8"]
 
     for user in users:
         newUser = User.objects.create(username=str(user),
                                     created_at=timezone.now())
         newUser.save()
-
-    # data = '{"username": "test_user_1"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_2"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_3"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_4"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_5"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_6"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_7"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_8"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_9"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_10"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_11"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_12"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_13"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_14"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_14"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_15"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_16"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_17"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"username": "test_user_18"}'
-    # r = requests.post(url, data=data, headers=headers)
     return
 
 
@@ -99,23 +61,6 @@ def create_test_chats():
             userObj = User.objects.filter(id=user).first()
             newChatUser = ChatUser.objects.create(chat=chatObj, user=userObj)
             newChatUser.save()
-
-    # data = '{"name": "test_chat_3", "users": [5, 6]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_4", "users": [7, 8]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_5", "users": [9, 10]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_6", "users": [9, 11]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_7", "users": [12, 13]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_8", "users": [13, 14]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_9", "users": [15, 16]}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"name": "test_chat_10", "users": [17, 18]}'
-    # r = requests.post(url, data=data, headers=headers)
     return
 
 
@@ -138,15 +83,6 @@ def create_test_messages():
                                         text=message[2],
                                         created_at=timezone.now())
         newMessage.save()
-
-    # data = '{"chat": 9, "author": 15, "text": "hi"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"chat": 9, "author": 16, "text": "hello"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"chat": 10, "author": 17, "text": "hi"}'
-    # r = requests.post(url, data=data, headers=headers)
-    # data = '{"chat": 10, "author": 18, "text": "hello"}'
-    # r = requests.post(url, data=data, headers=headers)
     return
 
 
@@ -154,21 +90,3 @@ if __name__ == '__main__':
     create_test_users()
     create_test_chats()
     create_test_messages()
-
-
-
-# users
-# data = '{"username": "test_user_0"}'
-# r = requests.post(url, data=data, headers=headers)
-
-# chats
-# data = '{"name": "test_chat_1", "users": [1, 2]}'
-# r = requests.post(url, data=data, headers=headers)
-# data = '{"name": "test_chat_2", "users": [3, 4]}'
-# r = requests.post(url, data=data, headers=headers)
-
-#massages
-# data = '{"chat": 3, "author": 5, "text": "hi"}'
-# r = requests.post(url, data=data, headers=headers)
-# data = '{"chat": 4, "author": 7, "text": "hi"}'
-# r = requests.post(url, data=data, headers=headers)

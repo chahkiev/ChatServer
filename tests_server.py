@@ -9,7 +9,7 @@ class TestUserAdd(unittest.TestCase):
     create_test_users()
     create_test_chats()
     create_test_messages()
-    
+
     def test_UserAdd_ERROR(self):
         # Invalid data: 'usrnme' instead of 'username'
         url = 'http://localhost:9000/users/add'
@@ -62,7 +62,6 @@ class TestMessagesAdd(unittest.TestCase):
         r = requests.post(url, data=data, headers=headers)
         self.assertEqual(str(r), '<Response [409]>')
 
-
     def test_MessagesAdd_OK(self):
         url = 'http://localhost:9000/messages/add'
         data = {"chat": 4, "author": 7, "text": "hi"}
@@ -85,7 +84,6 @@ class TestChatsGet(unittest.TestCase):
         r = requests.post(url, data=data, headers=headers)
         self.assertEqual(str(r), '<Response [409]>')
 
-
     def test_ChatsGet_OK(self):
         url = 'http://localhost:9000/chats/get'
         data = {"user": 12}
@@ -107,7 +105,6 @@ class TestMessagesGet(unittest.TestCase):
         headers = {headers[0]: headers[1][1::]}
         r = requests.post(url, data=data, headers=headers)
         self.assertEqual(str(r), '<Response [409]>')
-
 
     def test_MessagesGet_OK(self):
         url = 'http://localhost:9000/messages/get'
