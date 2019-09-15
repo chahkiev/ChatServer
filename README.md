@@ -1,7 +1,7 @@
 [![Travis][build-badge]][build]
 
-[build-badge]: https://img.shields.io/travis/chahkiev/testTravis/master.png?style=flat-square
-[build]: https://travis-ci.org/chahkiev/testTravis
+[build-badge]: https://img.shields.io/travis/chahkiev/ChatServer/master.png?style=flat-square
+[build]: https://travis-ci.org/chahkiev/ChatServer
 
 # ChatServer
 
